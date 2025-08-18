@@ -63,8 +63,49 @@ body {
     gap: 16px !important;
 }
 
-/* Thêm style cho Leaflet map container */
+/* Thêm style cho Leaflet map container
 .leaflet-container {
     width: 100%;
     height: 100%;
+}
+
+/* Ẩn attribution và logo ở góc dưới bản đồ */
+.leaflet-control-attribution {
+    display: none !important;
+}
+
+/* Tùy chỉnh marker */
+.leaflet-marker-icon {
+    width: 16px !important;
+    height: 20px !important;
+    margin-left: -8px !important;
+    margin-top: -8px !important;
+    filter: none !important;
+    /* Bỏ hoàn toàn drop-shadow */
+    border-radius: 50% !important;
+    /* Các thuộc tính khác */
+    -webkit-filter: none !important;
+    /* Cho Safari */
+    box-shadow: none !important;
+    /* Bỏ box-shadow nếu có */
+}
+
+/* Bỏ đổ bóng cho marker default của Leaflet */
+.leaflet-marker-shadow {
+    display: none !important;
+}
+
+/* Style cho label ga và đặc khu */
+.station-label,
+.special-area-label {
+    padding-left: 24px !important;
+    /* Tạo khoảng cách với icon */
+    line-height: 24px !important;
+    /* Căn giữa text theo chiều dọc */
+    font-size: 12px !important;
+    white-space: nowrap !important;
+}
+
+.special-area-label {
+    color: #e11d48 !important;
 }

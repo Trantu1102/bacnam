@@ -1,5 +1,4 @@
-
-      document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
         // Dữ liệu các ga và khoảng cách (tính từ Hà Nội)
         const stations = {
           Hanoi: { name: "Hà Nội", distance: 0 },
@@ -35,9 +34,8 @@
           HCM: [10.7769, 106.7009],
         };
 
-        let map,
-          routeLine,
-          markers = [];
+        let map, routeLine;
+        let routeMarkers = []; // Mảng lưu tất cả marker và label
 
         // Hàm khởi tạo bản đồ và marker các ga lớn
 
@@ -91,16 +89,18 @@
 
         // Hàm vẽ đường đi với hiệu ứng và đường cong
         function drawRoute(startId, endId) {
+          // Xóa route và marker cũ
           if (routeLine) {
             map.removeLayer(routeLine);
             routeLine = null;
           }
-          markers.forEach((m) => map.removeLayer(m));
-          markers = [];
+          // Xóa tất cả marker và label cũ
+          routeMarkers.forEach((m) => map.removeLayer(m));
+          routeMarkers = [];
 
           const latlngs = getRouteSegment(startId, endId);
 
-          // Đường đi mỏng hơn và cong
+          // Vẽ đường đi
           routeLine = L.polyline([latlngs[0]], {
             color: "#2563eb",
             weight: 1,
@@ -108,7 +108,6 @@
             lineCap: "round",
           }).addTo(map);
 
-          // Hiệu ứng vẽ tuyến đường
           function animateLine(i) {
             if (i < latlngs.length) {
               routeLine.addLatLng(latlngs[i]);
@@ -117,21 +116,30 @@
           }
           animateLine(1);
 
-          // Đặt marker cho các ga đầu/cuối
-          const stationCoords = {
-            Hanoi: [21.0285, 105.8542],
-            Vinh: [18.6822, 105.6814],
-            DaNang: [16.0678, 108.2208],
-            NhaTrang: [12.2451, 109.1943],
-            HCM: [10.7769, 106.7009],
-          };
+          // Đặt marker và label cho các ga đã chọn
           [startId, endId].forEach((id, idx) => {
-            const marker = L.marker(stationCoords[id], { riseOnHover: true })
-              .addTo(map)
-              .bindPopup(
-                stations[id].name + (idx === 0 ? " (Bắt đầu)" : " (Kết thúc)")
-              );
-            markers.push(marker);
+            const marker = L.marker(stationCoords[id], {
+              riseOnHover: true,
+              icon: L.icon({
+                iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+                iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
+                shadowUrl: null, // Bỏ đổ bóng
+                iconSize: [16, 24], // Nhỏ hơn
+                iconAnchor: [8, 24],
+              }),
+            }).addTo(map);
+
+            const label = L.marker(stationCoords[id], {
+              icon: L.divIcon({
+                className: "station-label",
+                html: `Ga ${stations[id].name}`,
+                iconAnchor: [-24, 12], // Di chuyển sang phải và căn giữa theo chiều dọc
+                iconSize: [120, 24],    // Đặt kích thước cố định cho container
+              }),
+              interactive: false,
+            }).addTo(map);
+
+            routeMarkers.push(marker, label);
           });
 
           map.fitBounds(L.polyline(latlngs).getBounds(), { padding: [30, 30] });
@@ -283,46 +291,28 @@
             L.marker(coord).addTo(map).bindPopup(stations[id].name);
           });
 
-          // Thêm text label cho các ga lớn
-          const gaLabels = [
-            { name: "Ga Hà Nội", coord: [21.0285, 105.8542] },
-            { name: "Ga Vinh", coord: [18.6822, 105.6814] },
-            { name: "Ga Đà Nẵng", coord: [16.0678, 108.2208] },
-            { name: "Ga Nha Trang", coord: [12.2451, 109.1943] },
-            { name: "Ga TP. Hồ Chí Minh", coord: [10.7769, 106.7009] },
-          ];
-          gaLabels.forEach((label) => {
-            L.marker(label.coord, {
-              icon: L.divIcon({
-                className: "custom-label",
-                html: `<span style="background:rgba(255,255,255,0.85);padding:2px 10px;border-radius:4px;font-weight:500;font-size:11px;color:#2563eb;border:1px solid #2563eb;white-space:nowrap;">${label.name}</span>`,
-                iconAnchor: [0, 0],
-              }),
-              interactive: false,
-              keyboard: false,
-            }).addTo(map);
-          });
-
-          // Đặc khu Hoàng Sa, Trường Sa
+          // Chỉ tạo label cho đặc khu một dòng
           L.marker([16.5, 112.0], {
             icon: L.divIcon({
-              className: "custom-label",
-              html: `<span style="background:rgba(255,255,255,0.85);padding:2px 10px;border-radius:4px;font-weight:500;font-size:11px;color:#e11d48;border:1px solid #e11d48;white-space:nowrap;">Đặc khu Hoàng Sa</span>`,
-              iconAnchor: [0, 0],
+              className: "special-area-label",
+              html: "Đặc khu Hoàng Sa",
+              iconAnchor: [-24, 12],  // Di chuyển sang phải và căn giữa
+              iconSize: [120, 24]     // Đặt kích thước cố định cho container
             }),
             interactive: false,
-            keyboard: false,
           }).addTo(map);
 
           L.marker([10.0, 114.3], {
             icon: L.divIcon({
-              className: "custom-label",
-              html: `<span style="background:rgba(255,255,255,0.85);padding:2px 10px;border-radius:4px;font-weight:500;font-size:11px;color:#e11d48;border:1px solid #e11d48;white-space:nowrap;">Đặc khu Trường Sa</span>`,
-              iconAnchor: [0, 0],
+              className: "special-area-label",
+              html: "Đặc khu Trường Sa",
+              iconAnchor: [-24, 12],  // Di chuyển sang phải và căn giữa
+              iconSize: [120, 24]     // Đặt kích thước cố định cho container
             }),
             interactive: false,
-            keyboard: false,
           }).addTo(map);
+
+          // Không tạo marker và label cho các ga khi khởi tạo
         }
 
         // Khi chưa chọn đủ ga, ẩn kết quả và chỉ hiện bản đồ với marker các ga
