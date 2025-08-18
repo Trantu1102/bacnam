@@ -12,141 +12,138 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="bg-blue-50 text-gray-800">
-    <div class="app-container max-w-4xl mx-auto p-2 sm:p-4 flex flex-col gap-4">
-      <!-- Bản đồ lên đầu -->
-      <div class="w-full">
-        <h3 class="text-lg font-bold mb-2 text-center">Bản đồ hành trình</h3>
+    <div
+      class="app-container max-w-7xl mx-auto p-4 flex flex-col md:flex-row gap-6"
+    >
+      <!-- Cột 1: Bản đồ -->
+      <div class="w-full md:w-3/5">
         <div id="vietnam-map"></div>
       </div>
-      <!-- Form + Kết quả -->
-      <div class="flex flex-col md:flex-row gap-4 w-full">
+
+      <!-- Cột 2: Form + Kết quả -->
+      <div class="w-full md:w-2/5 flex flex-col gap-6">
         <!-- Form -->
-        <div class="flex-1 flex flex-col gap-4">
-          <div class="bg-white p-4 rounded-3xl shadow-xl">
-            <div
-              class="flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4"
-            >
-              <div class="w-full sm:w-1/2">
-                <label
-                  for="start-station"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                  >Từ Ga:</label
-                >
-                <select
-                  id="start-station"
-                  class="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="" selected disabled>Chọn ga bắt đầu</option>
-                  <option value="Hanoi">Hà Nội</option>
-                  <option value="Vinh">Vinh</option>
-                  <option value="DaNang">Đà Nẵng</option>
-                  <option value="NhaTrang">Nha Trang</option>
-                  <option value="HCM">TP. Hồ Chí Minh</option>
-                </select>
-              </div>
-              <div class="w-full sm:w-1/2">
-                <label
-                  for="end-station"
-                  class="block text-sm font-medium text-gray-700 mb-2"
-                  >Đến Ga:</label
-                >
-                <select
-                  id="end-station"
-                  class="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="" selected disabled>Chọn ga kết thúc</option>
-                  <option value="Hanoi">Hà Nội</option>
-                  <option value="Vinh">Vinh</option>
-                  <option value="DaNang">Đà Nẵng</option>
-                  <option value="NhaTrang">Nha Trang</option>
-                  <option value="HCM">TP. Hồ Chí Minh</option>
-                </select>
-              </div>
+        <div class="bg-white p-4 rounded-3xl shadow-xl">
+          <div class="flex flex-col gap-4">
+            <div>
+              <label
+                for="start-station"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Từ Ga:</label
+              >
+              <select
+                id="start-station"
+                class="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="" selected disabled>Chọn ga bắt đầu</option>
+                <option value="Hanoi">Hà Nội</option>
+                <option value="Vinh">Vinh</option>
+                <option value="DaNang">Đà Nẵng</option>
+                <option value="NhaTrang">Nha Trang</option>
+                <option value="HCM">TP. Hồ Chí Minh</option>
+              </select>
             </div>
-            <button
-              id="compare-btn"
-              class="w-full mt-6 bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:bg-blue-700 transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-              Bắt đầu so sánh
-            </button>
+            <div>
+              <label
+                for="end-station"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Đến Ga:</label
+              >
+              <select
+                id="end-station"
+                class="w-full p-3 bg-gray-100 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="" selected disabled>Chọn ga kết thúc</option>
+                <option value="Hanoi">Hà Nội</option>
+                <option value="Vinh">Vinh</option>
+                <option value="DaNang">Đà Nẵng</option>
+                <option value="NhaTrang">Nha Trang</option>
+                <option value="HCM">TP. Hồ Chí Minh</option>
+              </select>
+            </div>
           </div>
-          <!-- Kết quả -->
-          <div
-            id="results-container"
-            class="bg-white p-4 rounded-3xl shadow-xl hidden fade-in"
+          <button
+            id="compare-btn"
+            class="w-full mt-6 bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl shadow-md hover:bg-blue-700 transition duration-300"
           >
-            <h2
-              class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6"
+            Bắt đầu so sánh
+          </button>
+        </div>
+
+        <!-- Kết quả -->
+        <div
+          id="results-container"
+          class="bg-white p-4 rounded-3xl shadow-xl hidden fade-in"
+        >
+          <h2
+            class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6"
+          >
+            Kết Quả So Sánh
+          </h2>
+          <div
+            class="bg-blue-50 border-2 border-blue-400 p-4 rounded-2xl flex items-center space-x-4 mb-4 shadow-sm"
+          >
+            <span class="train-icon" role="img" aria-label="Tàu cao tốc"
+              >🚄</span
             >
-              Kết Quả So Sánh
-            </h2>
-            <div
-              class="bg-blue-50 border-2 border-blue-400 p-4 rounded-2xl flex items-center space-x-4 mb-4 shadow-sm"
-            >
-              <span class="train-icon" role="img" aria-label="Tàu cao tốc"
-                >🚄</span
-              >
-              <div>
-                <h3 class="text-xl font-bold text-blue-800">
-                  Tàu Cao Tốc (Dự kiến)
-                </h3>
-                <p class="text-gray-600 text-sm">
-                  Tốc độ trung bình: <span id="hightech-speed">350 km/h</span>
-                </p>
-                <p class="text-gray-600 font-semibold">
-                  Thời gian:
-                  <span id="hightech-time" class="text-lg text-blue-600"
-                    >--</span
-                  >
-                </p>
-              </div>
+            <div>
+              <h3 class="text-xl font-bold text-blue-800">
+                Tàu Cao Tốc (Dự kiến)
+              </h3>
+              <p class="text-gray-600 text-sm">
+                Tốc độ trung bình: <span id="hightech-speed">350 km/h</span>
+              </p>
+              <p class="text-gray-600 font-semibold">
+                Thời gian:
+                <span id="hightech-time" class="text-lg text-blue-600">--</span>
+              </p>
             </div>
-            <div
-              class="bg-orange-50 border-2 border-orange-400 p-4 rounded-2xl flex items-center space-x-4 shadow-sm"
+          </div>
+          <div
+            class="bg-orange-50 border-2 border-orange-400 p-4 rounded-2xl flex items-center space-x-4 shadow-sm"
+          >
+            <span
+              class="train-icon"
+              role="img"
+              aria-label="Tàu hỏa truyền thống"
+              >🚂</span
             >
-              <span
-                class="train-icon"
-                role="img"
-                aria-label="Tàu hỏa truyền thống"
-                >🚂</span
-              >
-              <div>
-                <h3 class="text-xl font-bold text-orange-800">
-                  Tàu Hỏa Truyền Thống
-                </h3>
-                <p class="text-gray-600 text-sm">
-                  Tốc độ trung bình: <span id="traditional-speed">60 km/h</span>
-                </p>
-                <p class="text-gray-600 font-semibold">
-                  Thời gian:
-                  <span id="traditional-time" class="text-lg text-orange-600"
-                    >--</span
-                  >
-                </p>
-              </div>
-            </div>
-            <div class="mt-8 text-center">
-              <p class="text-lg font-bold text-gray-900">
-                Tiết kiệm được:
-                <span
-                  id="time-saved"
-                  class="text-2xl text-green-600 font-extrabold"
+            <div>
+              <h3 class="text-xl font-bold text-orange-800">
+                Tàu Hỏa Truyền Thống
+              </h3>
+              <p class="text-gray-600 text-sm">
+                Tốc độ trung bình: <span id="traditional-speed">60 km/h</span>
+              </p>
+              <p class="text-gray-600 font-semibold">
+                Thời gian:
+                <span id="traditional-time" class="text-lg text-orange-600"
                   >--</span
                 >
               </p>
-              <div class="progress-bar-container mt-4">
-                <div
-                  id="hightech-progress"
-                  class="progress-bar-fill bg-blue-500"
-                  style="width: 0%"
-                ></div>
-              </div>
-              <div class="flex justify-between text-sm mt-1">
-                <span class="text-blue-600 font-semibold">Tàu Cao Tốc</span>
-                <span class="text-orange-600 font-semibold"
-                  >Tàu Truyền Thống</span
-                >
-              </div>
+            </div>
+          </div>
+          <div class="mt-8 text-center">
+            <p class="text-lg font-bold text-gray-900">
+              Tiết kiệm được:
+              <span
+                id="time-saved"
+                class="text-2xl text-green-600 font-extrabold"
+                >--</span
+              >
+            </p>
+            <div class="progress-bar-container mt-4">
+              <div
+                id="hightech-progress"
+                class="progress-bar-fill bg-blue-500"
+                style="width: 0%"
+              ></div>
+            </div>
+            <div class="flex justify-between text-sm mt-1">
+              <span class="text-blue-600 font-semibold">Tàu Cao Tốc</span>
+              <span class="text-orange-600 font-semibold"
+                >Tàu Truyền Thống</span
+              >
             </div>
           </div>
         </div>

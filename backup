@@ -34,8 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
           HCM: [10.7769, 106.7009],
         };
 
-        // Thêm biến global để theo dõi cả 2 đường
-        let map, routeLine, parallelLine;
+        let map, routeLine;
         let routeMarkers = []; // Mảng lưu tất cả marker và label
 
         // Hàm khởi tạo bản đồ và marker các ga lớn
@@ -90,47 +89,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Hàm vẽ đường đi với hiệu ứng và đường cong
         function drawRoute(startId, endId) {
-          // Xóa routes và marker cũ
+          // Xóa route và marker cũ
           if (routeLine) {
             map.removeLayer(routeLine);
             routeLine = null;
           }
-          if (parallelLine) {
-            map.removeLayer(parallelLine);
-            parallelLine = null;
-          }
+          // Xóa tất cả marker và label cũ
           routeMarkers.forEach((m) => map.removeLayer(m));
           routeMarkers = [];
 
           const latlngs = getRouteSegment(startId, endId);
 
-          // Tính toán offset cho đường song song
-          const offsetLatlngs = latlngs.map((point) => {
-            // Offset 0.015 độ về phía Đông
-            return [point[0], point[1] + 0.115];
-          });
-
-          // Vẽ đường chính
+          // Vẽ đường đi
           routeLine = L.polyline([latlngs[0]], {
             color: "#2563eb",
-            weight: 2,
+            weight: 1,
             opacity: 0.9,
             lineCap: "round",
           }).addTo(map);
 
-          // Vẽ đường song song
-          parallelLine = L.polyline([offsetLatlngs[0]], {
-            color: "#2563eb",
-            weight: 2,
-            opacity: 0.9,
-            lineCap: "round",
-          }).addTo(map);
-
-          // Hàm animation cho cả 2 đường
           function animateLine(i) {
             if (i < latlngs.length) {
               routeLine.addLatLng(latlngs[i]);
-              parallelLine.addLatLng(offsetLatlngs[i]);
               setTimeout(() => animateLine(i + 1), 250);
             }
           }

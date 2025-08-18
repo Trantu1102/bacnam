@@ -8,7 +8,8 @@ body {
 /* Thêm style cho container map */
 #vietnam-map {
     width: 100%;
-    height: 360px;
+    height: 750px;
+    /* Tăng chiều cao cho map */
     border-radius: 1rem;
     overflow: hidden;
     position: relative;
@@ -18,9 +19,10 @@ body {
 }
 
 /* Responsive cho map */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
     #vietnam-map {
-        height: 250px;
+        height: 400px;
+        /* Responsive trên mobile */
     }
 }
 
@@ -61,6 +63,14 @@ body {
 
 .app-container {
     gap: 16px !important;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    .app-container {
+        padding: 2rem;
+    }
 }
 
 /* Thêm style cho Leaflet map container
@@ -108,4 +118,18 @@ body {
 
 .special-area-label {
     color: #e11d48 !important;
+}
+
+/* Style cho đường ray */
+.train-track-main {
+    stroke-dasharray: none;
+    stroke-linecap: round;
+    stroke-width: 2;
+}
+
+.train-track-parallel {
+    stroke-dasharray: none;
+    stroke-linecap: round;
+    stroke-width: 2;
+    opacity: 0.8;
 }
