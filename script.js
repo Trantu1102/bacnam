@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         // Thêm biến global để theo dõi cả 2 đường
-        let map, routeLine, parallelLine;
+        let map, routeLine, parallelLine, parallelLine_1;
         let routeMarkers = []; // Mảng lưu tất cả marker và label
 
         // Hàm khởi tạo bản đồ và marker các ga lớn
@@ -99,27 +99,35 @@ document.addEventListener("DOMContentLoaded", () => {
             map.removeLayer(parallelLine);
             parallelLine = null;
           }
+          if (parallelLine_1) {
+            map.removeLayer(parallelLine_1);
+            parallelLine_1 = null;
+          } // <-- thêm dấu đóng này
+
           routeMarkers.forEach((m) => map.removeLayer(m));
           routeMarkers = [];
 
           const latlngs = getRouteSegment(startId, endId);
 
-          // Tính toán offset cho đường song song
-          const offsetLatlngs = latlngs.map((point) => {
-            // Offset 0.015 độ về phía Đông
-            return [point[0], point[1] + 0.115];
-          });
+          // Tăng giá trị offset lên đáng kể (đơn vị: pixel)
+          const offsetLatlngs = offsetPolyline(latlngs, 20);    // Đường bên phải
+          const offsetLatlngs_1 = offsetPolyline(latlngs, -20); // Đường bên trái
 
-          // Vẽ đường chính
+          // Đảm bảo vẽ cả 3 đường với style giống nhau
           routeLine = L.polyline([latlngs[0]], {
-            color: "#2563eb",
+            color: "#eb2525ff",
             weight: 2,
             opacity: 0.9,
             lineCap: "round",
           }).addTo(map);
 
-          // Vẽ đường song song
           parallelLine = L.polyline([offsetLatlngs[0]], {
+            color: "#2563eb",
+            weight: 2,
+            opacity: 0.9,
+            lineCap: "round",
+          }).addTo(map);
+          parallelLine_1 = L.polyline([offsetLatlngs_1[0]], {
             color: "#2563eb",
             weight: 2,
             opacity: 0.9,
@@ -131,6 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (i < latlngs.length) {
               routeLine.addLatLng(latlngs[i]);
               parallelLine.addLatLng(offsetLatlngs[i]);
+              parallelLine_1.addLatLng(offsetLatlngs_1[i]);
               setTimeout(() => animateLine(i + 1), 250);
             }
           }
@@ -398,4 +407,43 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Khởi tạo bản đồ khi load trang
         initMap();
+
+        // Hàm offset tuyến đường theo phương vuông góc
+        function offsetPolyline(latlngs, offsetMeters) {
+          if (!map) return latlngs;
+          const offsetLatlngs = [];
+          for (let i = 0; i < latlngs.length; i++) {
+            let dx, dy;
+            // Chuyển latlng sang điểm trên bản đồ (pixel/met)
+            const pCurr = map.project(L.latLng(latlngs[i]), map.getZoom());
+            let pPrev, pNext;
+            if (i === 0) {
+              pNext = map.project(L.latLng(latlngs[i + 1]), map.getZoom());
+              dx = pNext.x - pCurr.x;
+              dy = pNext.y - pCurr.y;
+            } else if (i === latlngs.length - 1) {
+              pPrev = map.project(L.latLng(latlngs[i - 1]), map.getZoom());
+              dx = pCurr.x - pPrev.x;
+              dy = pCurr.y - pPrev.y;
+            } else {
+              pPrev = map.project(L.latLng(latlngs[i - 1]), map.getZoom());
+              pNext = map.project(L.latLng(latlngs[i + 1]), map.getZoom());
+              dx = (pNext.x - pPrev.x) / 2;
+              dy = (pNext.y - pPrev.y) / 2;
+            }
+            // Vector pháp tuyến (vuông góc): (-dy, dx)
+            const length = Math.sqrt(dx * dx + dy * dy);
+            const nx = -dy / length;
+            const ny = dx / length;
+            // Offset theo pixel
+            const pOffset = L.point(
+              pCurr.x + nx * (offsetMeters / 2),
+              pCurr.y + ny * (offsetMeters / 2)
+            );
+            // Chuyển lại latlng
+            const latlngOffset = map.unproject(pOffset, map.getZoom());
+            offsetLatlngs.push([latlngOffset.lat, latlngOffset.lng]);
+          }
+          return offsetLatlngs;
+        }
       });
