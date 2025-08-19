@@ -119,19 +119,20 @@ document.addEventListener("DOMContentLoaded", () => {
             weight: 2,
             opacity: 0.9,
             lineCap: "round",
+            dashArray: "10, 10" // Thêm thuộc tính này để tạo đường nét đứt
           }).addTo(map);
 
           parallelLine = L.polyline([offsetLatlngs[0]], {
             color: "#2563eb",
             weight: 2,
             opacity: 0.9,
-            lineCap: "round",
+            lineCap: "round"
           }).addTo(map);
           parallelLine_1 = L.polyline([offsetLatlngs_1[0]], {
             color: "#2563eb",
             weight: 2,
             opacity: 0.9,
-            lineCap: "round",
+            lineCap: "round"
           }).addTo(map);
 
           // Hàm animation cho cả 2 đường
